@@ -15,8 +15,40 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp">
+    <ClCompile Include="src\main.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="src\matrix44.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\vertex.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\vec3f.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\color.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\draw.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\matrix44.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\vertex.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\vec3f.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\color.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\draw.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

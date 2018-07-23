@@ -143,7 +143,19 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp" />
+    <ClCompile Include="src\color.cpp" />
+    <ClCompile Include="src\draw.cpp" />
+    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\matrix44.cpp" />
+    <ClCompile Include="src\vec3f.cpp" />
+    <ClCompile Include="src\vertex.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\color.h" />
+    <ClInclude Include="src\draw.h" />
+    <ClInclude Include="src\matrix44.h" />
+    <ClInclude Include="src\vec3f.h" />
+    <ClInclude Include="src\vertex.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
