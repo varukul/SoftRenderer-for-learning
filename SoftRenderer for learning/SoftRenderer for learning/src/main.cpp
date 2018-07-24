@@ -121,7 +121,7 @@ void demo_cube(int w, int h) {
 	mat = NULL;
 }
 
-void deme_color_triangle(int w, int h) {
+void demo_color_triangle(int w, int h) {
 	color **mat = new color*[h];
 	for (int i = 0; i < h; i++) {
 		*(mat + i) = new color[w];
@@ -144,10 +144,49 @@ void deme_color_triangle(int w, int h) {
 		v[i]._pos = p * v[i]._pos;
 		std::cout << v[i]._pos << std::endl;
 	}
-	Draw::draw_triangles(mat, v, w, h);
+	Draw::draw_triangle(mat, v, w, h);
 	//for color test
 	generate_color_PPM("./images/color_triangles_1.PPM", w, h, mat);
 	//
+
+	for (int i = 0; i < h; i++) {
+		delete[]mat[i];
+	}
+	delete[]mat;
+	mat = NULL;
+}
+
+void demo_hiden_surface(int w, int h) {
+	color **mat = new color*[h];
+	for (int i = 0; i < h; i++) {
+		*(mat + i) = new color[w];
+	}
+
+	vertex v[6] = { vertex(vec3f(-20, 0, -40), color(255, 0, 0)) ,         //counterclockwise
+		vertex(vec3f(20, 0, -40), color(255, 0, 0)) ,
+		vertex(vec3f(0, 20, -40), color(255, 0, 0)) ,
+		vertex(vec3f(-30, 10, -60), color(0, 0, 255)) ,         //counterclockwise
+		vertex(vec3f(10, 10, -20), color(0, 0, 255)) ,
+		vertex(vec3f(0, 10, -60), color(0, 0, 255)) };
+
+	matrix44 view;
+	view.set_viewport(w, h);
+	matrix44 perspective;
+	perspective.set_perspective(float(w) / float(h), 60, -10, -100);
+	matrix44 camera;
+	camera.set_camera(vec3f(0, 0, 0), vec3f(0, 0, -1), vec3f(0, 1, 0));
+	matrix44 p;
+	p = perspective * camera;
+	p = view * p;
+	for (int i = 0; i < 6; i++) {
+		v[i]._pos = p * v[i]._pos;
+		std::cout << v[i]._pos << std::endl;
+	}
+
+
+	Draw::draw_triangles(mat, v, 6, w, h,true);
+
+	generate_color_PPM("./images/hiden_surface_1.PPM", w, h, mat);
 
 	for (int i = 0; i < h; i++) {
 		delete[]mat[i];
@@ -161,7 +200,7 @@ int main() {
 	const int w = 640;
 	const int h = 480;
 
-	deme_color_triangle(w, h);
+	demo_hiden_surface(w, h);
 
 	system("pause");
 	return 0;

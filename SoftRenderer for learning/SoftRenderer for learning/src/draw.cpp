@@ -1,26 +1,23 @@
 #include"Draw.h"
 #include<math.h>
+#include<iostream>
 
 
-Draw::Draw() {
-
+float Draw::interp_num(float n1, float n2, float p) {
+	return abs(p) / abs(n2 - n1);
 }
 
-
-
-Draw::~Draw() {
-
+float Draw::interp_line(float x1, float y1, float x2, float y2, float tx,float ty) {
+	float x = interp_num(x1, x2, tx);
+	float y = interp_num(y1, y2, ty);
+	return 1 - sqrt(x*x + y * y);
 }
 
 void Draw::drawline(color **mat, int x0, int y0, int xe, int ye, int nx, int ny) {
 	int dx = abs(xe - x0), dy = abs(ye - y0);
 	int sx = (xe > x0) ? 1 : -1;
 	int sy = (ye > y0) ? -1 : 1;
-	/*y0 = (y0 > 0) ? y0 : 0;
-	x0 = (x0 > 0) ? x0 : 0;
-	y0 = (y0 < ny) ? y0 : ny - 1;
-	x0 = (x0 < nx) ? x0 : nx - 1;*/
-
+	
 	int x = x0, y = ny - y0 - 1;
 	bool isup = false;
 	int k = dx - 1;
@@ -38,6 +35,7 @@ void Draw::drawline(color **mat, int x0, int y0, int xe, int ye, int nx, int ny)
 		isup = true, k = dy - 1, p = dx2 - dy;
 	}
 	while (k > 0) {
+		
 		if (!isup) {
 			if (p < 0) {
 				if (x >= 0 && x < nx &&y >= 0 && y < ny) {
@@ -74,10 +72,9 @@ void Draw::drawline(color **mat, int x0, int y0, int xe, int ye, int nx, int ny)
 		}
 		k--;
 	}
-
 }
 
-void Draw::drawline(color **mat, const vertex &vb, const vertex &ve, int nx, int ny) {
+void Draw::drawline(color **mat, const vertex &vb, const vertex &ve, int nx, int ny, bool enable_depth_test) {
 	int dx = abs(ve._pos._x - vb._pos._x), dy = abs(ve._pos._y - vb._pos._y);
 	int sx = (ve._pos._x > vb._pos._x) ? 1 : -1;
 	int sy = (ve._pos._y > vb._pos._y) ? -1 : 1;
@@ -99,18 +96,26 @@ void Draw::drawline(color **mat, const vertex &vb, const vertex &ve, int nx, int
 		isup = true, k = dy - 1, p = dx2 - dy;
 	}
 	while (k > 0) {
+		float t = interp_line(vb._pos._x, vb._pos._y, ve._pos._x, ve._pos._y, x, y);
+		color c(vb._col*t + ve._col*(1 - t));
+
+		if (x >= 0 && x < nx &&y >= 0 && y < ny) {
+			if (enable_depth_test) {
+				if (mat[y][x]._a >= c._a) {
+					mat[y][x] = c;
+				}
+			}
+			else {
+				mat[y][x] = c;
+			}
+		}
+
 		if (!isup) {
 			if (p < 0) {
-				if (x >= 0 && x < nx &&y >= 0 && y < ny) {
-					mat[y][x] = 1;
-				}
 				x += sx;
 				p = p + dy2;
 			}
 			else {
-				if (x >= 0 && x < nx &&y >= 0 && y < ny) {
-					mat[y][x] = 1;
-				}
 				x += sx;
 				y += sy;
 				p = p + miuns;
@@ -118,16 +123,10 @@ void Draw::drawline(color **mat, const vertex &vb, const vertex &ve, int nx, int
 		}
 		else {
 			if (p < 0) {
-				if (x >= 0 && x < nx &&y >= 0 && y < ny) {
-					mat[y][x] = 1;
-				}
 				y += sy;
 				p = p + dx2;
 			}
 			else {
-				if (x >= 0 && x < nx &&y >= 0 && y < ny) {
-					mat[y][x] = 1;
-				}
 				y += sy;
 				x += sx;
 				p = p - miuns;
@@ -135,7 +134,12 @@ void Draw::drawline(color **mat, const vertex &vb, const vertex &ve, int nx, int
 		}
 		k--;
 	}
+}
 
+void Draw::drawlines(color **mat, const vertex v[], const int length, int w, int h, bool enable_depth_test) {
+	for (int i = 0; i < length - 1; i++) {
+		drawline(mat, v[i], v[i + 1], w, h, enable_depth_test);
+	}
 }
 
 int get_min(int p1, int p2, int p3) {
@@ -162,7 +166,7 @@ float f20(vec3f v2, vec3f v0, vec3f v) {
 	return (v2._y - v0._y)*v._x + (v0._x - v2._x)*v._y + v2._x*v0._y - v0._x*v2._y;
 }
 
-void Draw::draw_triangles(color **mat, vertex v[], int nx, int ny) {
+void Draw::draw_triangle(color **mat, const vertex v[3], int nx, int ny, bool enable_depth_test) {
 	int xmin = get_min(v[0]._pos._x, v[1]._pos._x, v[2]._pos._x);
 	int xmax = get_max(v[0]._pos._x, v[1]._pos._x, v[2]._pos._x);
 	int ymin = get_min(v[0]._pos._y, v[1]._pos._y, v[2]._pos._y);
@@ -172,6 +176,7 @@ void Draw::draw_triangles(color **mat, vertex v[], int nx, int ny) {
 	float fc = f01(v[0]._pos, v[1]._pos, v[2]._pos);
 	for (int y = ymin; y < ymax && y < ny && y >= 0; y++) {
 		for (int x = xmin; x < xmax && x < nx && x >= 0; x++) {
+
 			float a = f12(v[1]._pos, v[2]._pos, vec3f(x, y, 0)) / fa;
 			float b = f20(v[2]._pos, v[0]._pos, vec3f(x, y, 0)) / fb;
 			float c = f01(v[0]._pos, v[1]._pos, vec3f(x, y, 0)) / fc;
@@ -179,11 +184,39 @@ void Draw::draw_triangles(color **mat, vertex v[], int nx, int ny) {
 				if (a > 0 && fa*f12(v[1]._pos, v[2]._pos, vec3f(-1, -1, 0)) &&
 					b > 0 && fa*f20(v[2]._pos, v[0]._pos, vec3f(-1, -1, 0)) &&
 					c > 0 && fa*f01(v[0]._pos, v[1]._pos, vec3f(-1, -1, 0))) {
-					color c(v[0]._col*a + v[1]._col*b + v[2]._col*c);
+					color col(v[0]._col*a + v[1]._col*b + v[2]._col*c);
 					int temp = ny - y - 1;
-					mat[temp][x] = c;
+					if (enable_depth_test) {
+						if (mat[temp][x]._a >= col._a) {
+							mat[temp][x] = col;
+						}
+					}
+					else {
+						mat[temp][x] = col;
+					}
 				}
 			}
 		}
+	}
+}
+void Draw::draw_triangles(color **mat, const vertex v[], const int length, int w, int h, bool enable_depth_test) {
+	if (length % 3 != 0) {
+		std::cerr << "vertexs of triangles is not enough" << std::endl;
+		return;
+	}
+	for (int i = 0; i < length - 2; i += 3) {
+		vertex temp[3] = { v[i],v[i + 1],v[i + 2] };
+		draw_triangle(mat, temp, w, h, enable_depth_test);
+	}
+}
+
+void Draw::draw_adjacent_triangles(color **mat, const vertex v[], const int length, int nx, int ny, bool enable_depth_test) {
+	if (length <= 2) {
+		std::cerr << "vertexs of triangles is not enough" << std::endl;
+		return;
+	}
+	for (int i = 0; i < length - 2; i++) {
+		vertex temp[3] = { v[i],v[i + 1],v[2] };
+		draw_triangle(mat, temp, nx, ny,enable_depth_test);
 	}
 }
