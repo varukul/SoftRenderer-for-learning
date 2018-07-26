@@ -33,6 +33,9 @@
     <ClCompile Include="src\draw.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="src\sample.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\matrix44.h">
@@ -48,6 +51,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="src\draw.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\sample.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
