@@ -39,3 +39,8 @@ color& color::operator=(const color &c) {
 color color::operator*(float n) const{
 	return color(_r*n, _g*n, _b*n ,_a*n);
 }
+
+std::ostream& operator<<(std::ostream &os, const color &c) {
+	os << c._r << " " << c._g << " " << c._b << " " << c._a;
+	return os;
+}
