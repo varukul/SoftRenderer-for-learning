@@ -36,6 +36,9 @@
     <ClCompile Include="src\sample.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="src\texture.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\matrix44.h">
@@ -54,6 +57,15 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="src\sample.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\spatial.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\texture.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ioimages.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

@@ -3,6 +3,13 @@
 #include<vector>
 #include"vertex.h"
 
+/*
+not success at all
+
+*/
+
+
+
 class filter {
 public:
 	float r()const;
