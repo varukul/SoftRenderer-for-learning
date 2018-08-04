@@ -144,6 +144,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\color.cpp" />
+    <ClCompile Include="src\cube.cpp" />
     <ClCompile Include="src\draw.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\matrix44.cpp" />
@@ -154,6 +155,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\color.h" />
+    <ClInclude Include="src\cube.h" />
     <ClInclude Include="src\draw.h" />
     <ClInclude Include="src\matrix44.h" />
     <ClInclude Include="src\ioimages.h" />

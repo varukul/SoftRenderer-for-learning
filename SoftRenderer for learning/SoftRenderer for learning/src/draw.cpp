@@ -169,8 +169,8 @@ void Draw::draw_triangle_texture(color **mat, const vertex v[3], int nx, int ny,
 	int xmax = get_max(v[0]._pos._x, v[1]._pos._x, v[2]._pos._x);
 	int ymin = get_min(v[0]._pos._y, v[1]._pos._y, v[2]._pos._y);
 	int ymax = get_max(v[0]._pos._y, v[1]._pos._y, v[2]._pos._y);
-	for (int i = xmin; i <= xmax; i++) {
-		for (int j = ymin; j <= ymax; j++) {
+	for (int i = (xmin>0?xmin:0); i < (xmax>nx?nx:xmax); i++) {
+		for (int j = (ymin>0?ymin:0); j < (ymax>ny?ny:ymax); j++) {
 			color c = interpTriangleTexture(v[0], v[1], v[2], i, j, texture);
 			int temp = ny - j - 1;
 			if (enable_depth_test) {
