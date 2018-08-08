@@ -161,11 +161,7 @@ void demo_cube(int w, int h) {
 	vertex temp7[3] = { v[5],v[6],v[2] };
 	vertex temp8[3] = { v[5],v[2],v[1] };
 
-	vertex temp9[3] = { v[5],v[1],v[0] };
-	vertex tempA[3] = { v[5],v[0],v[4] };
-
-	vertex tempB[3] = { v[6],v[7],v[2] };
-	vertex tempC[3] = { v[3],v[2],v[7] };
+	
 	//前面
 	Draw::draw_triangle_texture(mat, temp1, w, h, tex, true);
 	Draw::draw_triangle_texture(mat, temp2, w, h, tex, true);
@@ -183,10 +179,25 @@ void demo_cube(int w, int h) {
 	Draw::draw_triangle_texture(mat, temp8, w, h, tex, true);
 
 	//下面
+
+	v[1]._tc = textcoord(texcoord_wid, 0);                          //重新指定纹理坐标
+	v[0]._tc = textcoord(texcoord_wid, texcoord_het);
+	v[4]._tc = textcoord(0, texcoord_het);
+
+	vertex temp9[3] = { v[5],v[1],v[0] };
+	vertex tempA[3] = { v[5],v[0],v[4] };
+
 	Draw::draw_triangle_texture(mat, temp9, w, h, tex, true);
 	Draw::draw_triangle_texture(mat, tempA, w, h, tex, true);
 
 	//上面
+	v[2]._tc = textcoord(texcoord_wid, texcoord_het);
+	v[7]._tc = textcoord(0, 0);
+	v[3]._tc = textcoord(texcoord_wid, 0);
+
+	vertex tempB[3] = { v[6],v[7],v[2] };
+	vertex tempC[3] = { v[3],v[2],v[7] };
+
 	Draw::draw_triangle_texture(mat, tempB, w, h, tex, true);
 	Draw::draw_triangle_texture(mat, tempC, w, h, tex, true);
 
@@ -198,6 +209,8 @@ int main() {
 	const int w = 640;
 	const int h = 480;
 	
+	demo_cube(w, h);
+
 	system("pause");
 	return 0;
 }
