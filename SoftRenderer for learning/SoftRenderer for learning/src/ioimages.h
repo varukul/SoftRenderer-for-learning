@@ -52,6 +52,7 @@ bool getBmpData(const char *filepath,color **texc) {                            
 			texc[height - h - 1][w]._r = colorData[k + 2];
 			texc[height - h - 1][w]._g = colorData[k + 1];
 			texc[height - h - 1][w]._b = colorData[k];
+			std::cout << texc[height - h - 1][w]._r << " " << texc[height - h - 1][w]._g << " " << texc[height - h - 1][w]._b << std::endl;
 		}
 	}
 	std::cout << info.biBitCount << std::endl;
@@ -70,7 +71,7 @@ texture2d readBmp(const char *filepath) {
 	fread(&info, sizeof(byte), sizeof(BITMAPINFOHEADER), f);
 
 	color **texc = new color*[info.biHeight];
-	for (int i = 0; i < info.biWidth; i++) {
+	for (int i = 0; i < info.biHeight; i++) {
 		texc[i] = new color[info.biWidth];
 	}
 	getBmpData(filepath, texc);
