@@ -1,39 +1,20 @@
 #pragma once
 #pragma once
-#include"vec3f.h"
+#include"vec.h"
 #include"color.h"
 #include"texture.h"
-//#include"trianglemesh.h"
 
-//the half-edge strcture
-
-//class edge {
-//public:
-//	edge(vertex &v, face *f, edge *pair, edge *next);
-//	vertex *_v;
-//	face *_f;
-//	edge *_pair, *_next;
-//};
-//
-//
-//class face{
-//public:
-//	face(edge *e);
-//	edge *_e;
-//};
-
-class edge;
 class vertex
 {
 public:
-	vertex(const vec3f &pos, const color &col, const textcoord &tc, edge *e = NULL);
-	vertex(const vec3f &pos, const color &col);
-	vertex(const vertex &vertex);
+	vertex(const vec4f &pos, const textcoord &tc);
+	vertex(const vec4f &pos, const vec3f& normal, const textcoord &tc);
+	vertex(const vec4f &pos);
 	~vertex();
 
-	vec3f _pos;
-	color _col;
+	vec4f _pos;
+	vec3f _posW;          //存储顶点的世界坐标用于光照计算
+	vec3f _normal;
 	textcoord _tc;
-	edge *_e;
 };
 

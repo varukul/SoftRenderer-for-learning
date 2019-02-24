@@ -23,7 +23,7 @@
     <ProjectGuid>{1DE154FE-97D2-4293-81AB-C00F7B4D0349}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>SoftRendererforlearning</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -143,26 +143,26 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Geometry.cpp" />
     <ClCompile Include="src\color.cpp" />
-    <ClCompile Include="src\cube.cpp" />
     <ClCompile Include="src\draw.cpp" />
+    <ClCompile Include="src\ioimages.cpp" />
+    <ClCompile Include="src\Lighting.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\matrix44.cpp" />
-    <ClCompile Include="src\sample.cpp" />
     <ClCompile Include="src\texture.cpp" />
-    <ClCompile Include="src\vec3f.cpp" />
+    <ClCompile Include="src\vec.cpp" />
     <ClCompile Include="src\vertex.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Geometry.h" />
     <ClInclude Include="src\color.h" />
-    <ClInclude Include="src\cube.h" />
     <ClInclude Include="src\draw.h" />
+    <ClInclude Include="src\Lighting.h" />
     <ClInclude Include="src\matrix44.h" />
     <ClInclude Include="src\ioimages.h" />
-    <ClInclude Include="src\sample.h" />
-    <ClInclude Include="src\spatial.h" />
     <ClInclude Include="src\texture.h" />
-    <ClInclude Include="src\vec3f.h" />
+    <ClInclude Include="src\vec.h" />
     <ClInclude Include="src\vertex.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

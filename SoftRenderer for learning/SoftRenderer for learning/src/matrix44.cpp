@@ -2,24 +2,23 @@
 
 const float PI = 3.1415926f;
 
-void set_smallest_magnitude_to_1(vec3f &v) {
-	float x = v._x;
-	float y = v._y;
-	float z = v._z;
+void set_smallest_magnitude_to_1(vec4f &v) {
+	float x = v.x();
+	float y = v.y();
+	float z = v.z();
 	if (x < 0)x = -x;
 	if (y < 0)y = -y;
 	if (z < 0)z = -z;
-	float *temp;
 	float t = (x > y) ? y : x;
 	t = (t > z) ? z : t;
 	if (t == x) {
-		v._x = 1;
+		v.x(1);
 	}
 	else if (t == y) {
-		v._y = 1;
+		v.y(1);
 	}
 	else {
-		v._z = 1;
+		v.z(1);
 	}
 }
 
@@ -39,7 +38,7 @@ matrix44::~matrix44() {
 void matrix44::set_identity() {
 	for (int i = 0; i < 4; i++) {
 		for (int j = 0; j < 4; j++) {
-			mat[i][j] = (i == j) ? 1 : 0;
+			mat[i][j] = (i == j) ? 1.0f : 0.0f;
 		}
 	}
 }
@@ -60,16 +59,16 @@ matrix44 matrix44::set_inverse() {
 	return temp * this->set_transformation();
 }
 
-void matrix44::set_rotate(float theta, const vec3f& unit_axis) {
+void matrix44::set_rotate(float theta, const vec4f& unit_axis) {
 	set_identity();
 	float cosT = cos(PI*theta / 180.0f);
 	float sinT = sin(PI*theta / 180.0f);
-	float u = (unit_axis._x > 0) ? unit_axis._x : -unit_axis._x;
-	float v = (unit_axis._y > 0) ? unit_axis._y : -unit_axis._y;
-	float w = (unit_axis._z > 0) ? unit_axis._z : -unit_axis._z;
-	float u2 = unit_axis._x*unit_axis._x;
-	float v2 = unit_axis._y*unit_axis._y;
-	float w2 = unit_axis._z*unit_axis._z;
+	float u = (unit_axis.x() > 0) ? unit_axis.x() : -unit_axis.x();
+	float v = (unit_axis.y() > 0) ? unit_axis.y() : -unit_axis.y();
+	float w = (unit_axis.z() > 0) ? unit_axis.z() : -unit_axis.z();
+	float u2 = unit_axis.x()*unit_axis.x();
+	float v2 = unit_axis.y()*unit_axis.y();
+	float w2 = unit_axis.z()*unit_axis.z();
 
 	mat[0][0] = u2 + (1 - u2)*cosT;
 	mat[0][1] = u * v*(1 - cosT) - w * sinT;
@@ -82,19 +81,18 @@ void matrix44::set_rotate(float theta, const vec3f& unit_axis) {
 	mat[2][2] = w2 + (1 - w2)*cosT;
 }
 
-void matrix44::set_rotate_g(float theta, const vec3f &axis) {
-	vec3f w = axis.normalize();
-	vec3f t = w;
+void matrix44::set_rotate_g(float theta, const vec4f &axis) {//   prefer
+	vec4f w = axis.normalize();
+	vec4f t = w;
 	set_smallest_magnitude_to_1(t);
-	vec3f u = cross(t, w).normalize();
-	vec3f v = cross(w, u);
-
+	vec4f u = cross(t, w).normalize();
+	vec4f v = cross(w, u);
 	//Ruvw                                               // transform xyz coordinary to uvw coordinary
 	matrix44 Ruvw;
 	Ruvw.set_identity();
-	Ruvw.mat[0][0] = u._x; Ruvw.mat[0][1] = u._y; Ruvw.mat[0][2] = u._z;
-	Ruvw.mat[1][0] = v._x; Ruvw.mat[1][1] = v._y; Ruvw.mat[1][2] = v._z;
-	Ruvw.mat[2][0] = w._x; Ruvw.mat[2][1] = w._y; Ruvw.mat[2][2] = w._z;
+	Ruvw.mat[0][0] = u.x(); Ruvw.mat[0][1] = u.y(); Ruvw.mat[0][2] = u.z();
+	Ruvw.mat[1][0] = v.x(); Ruvw.mat[1][1] = v.y(); Ruvw.mat[1][2] = v.z();
+	Ruvw.mat[2][0] = w.x(); Ruvw.mat[2][1] = w.y(); Ruvw.mat[2][2] = w.z();
 
 	//Rz                                                 // rotate by z(w) axis
 	float cosT = cos(PI*theta / 180);
@@ -111,10 +109,13 @@ void matrix44::set_rotate_g(float theta, const vec3f &axis) {
 	*this = Ruvw_t * temp;
 }
 
-void matrix44::set_normal_rotate(float theta, const vec3f &axis) {
-	matrix44 rotate;
-	rotate.set_rotate_g(theta, axis);
-	*this = rotate.set_inverse().set_transformation();
+void matrix44::set_normal_transform(const matrix44& transpos) {
+	set_identity();
+	matrix44 temp = transpos;
+	for (int i = 0; i < 2; i++) {                             //将变换矩阵中的位移清理 因为法向量不需要位移
+		temp.mat[i][3] = 0;
+	}
+	*this = temp.set_inverse().set_transformation();     //(A^-1)^T 变换矩阵逆的转置矩阵
 }
 
 void matrix44::set_scale(float sx, float sy, float sz) {
@@ -156,31 +157,30 @@ void matrix44::set_viewport(float nx, float ny) {
 	mat[1][3] = (ny - 1) / 2.0f;
 }
 
-void matrix44::set_camera(const vec3f &eye, const vec3f &lookat, const vec3f &vup) {
-	vec3f w = -lookat.normalize();
-	vec3f u = cross(vup, w).normalize();
-	vec3f v = cross(w, u);
+void matrix44::set_camera(const vec4f &eye, const vec4f &lookat, const vec4f &vup) {
+	vec4f w = -(lookat - eye).normalize();
+	vec4f u = cross(vup, w).normalize();
+	vec4f v = cross(w, u);
 
 	matrix44 Translate;
-	Translate.set_translate(-eye._x, -eye._y, -eye._z);
+	Translate.set_translate(-eye.x(), -eye.y(), -eye.z());
 
 	matrix44 Ruvw;
 	Ruvw.set_identity();
-	Ruvw.mat[0][0] = u._x; Ruvw.mat[0][1] = u._y; Ruvw.mat[0][2] = u._z;
-	Ruvw.mat[1][0] = v._x; Ruvw.mat[1][1] = v._y; Ruvw.mat[1][2] = v._z;
-	Ruvw.mat[2][0] = w._x; Ruvw.mat[2][1] = w._y; Ruvw.mat[2][2] = w._z;
-
+	Ruvw.mat[0][0] = u.x(); Ruvw.mat[0][1] = u.y(); Ruvw.mat[0][2] = u.z();
+	Ruvw.mat[1][0] = v.x(); Ruvw.mat[1][1] = v.y(); Ruvw.mat[1][2] = v.z();
+	Ruvw.mat[2][0] = w.x(); Ruvw.mat[2][1] = w.y(); Ruvw.mat[2][2] = w.z();
 	*this = Ruvw * Translate;
 }
 
-void matrix44::set_orthorgraphic_offCenter(const vec3f &left_corner, const vec3f &right_corner) {
+void matrix44::set_orthorgraphic_offCenter(const vec4f &left_corner, const vec4f &right_corner) {
 	set_identity();
-	float rml = right_corner._x - left_corner._x;
-	float ral = right_corner._x + left_corner._x;
-	float tmb = right_corner._y - left_corner._y;
-	float tab = right_corner._y + left_corner._y;
-	float nmf = left_corner._z - right_corner._z;
-	float naf = left_corner._z + right_corner._z;
+	float rml = right_corner.x() - left_corner.x();
+	float ral = right_corner.x() + left_corner.x();
+	float tmb = right_corner.x() - left_corner.x();
+	float tab = right_corner.x() + left_corner.x();
+	float nmf = left_corner.z() - right_corner.z();
+	float naf = left_corner.z() + right_corner.z();
 	mat[0][0] = 2.0f / rml;
 	mat[1][1] = 2.0f / tmb;
 	mat[2][2] = 2.0f / nmf;
@@ -189,15 +189,15 @@ void matrix44::set_orthorgraphic_offCenter(const vec3f &left_corner, const vec3f
 	mat[2][3] = -naf / nmf;
 }
 
-void matrix44::set_perspective_offCenter(const vec3f &left_bottom_corner, const vec3f &right_top_corner) {
+void matrix44::set_perspective_offCenter(const vec4f &left_bottom_corner, const vec4f &right_top_corner) {
 	matrix44 othor;
 	othor.set_orthorgraphic_offCenter(left_bottom_corner, right_top_corner);
 	matrix44 p;
 	p.set_identity();
-	p.mat[0][0] = left_bottom_corner._z;
-	p.mat[1][1] = left_bottom_corner._z;
-	p.mat[2][2] = left_bottom_corner._z + right_top_corner._z;
-	p.mat[2][3] = -(left_bottom_corner._z*right_top_corner._z);
+	p.mat[0][0] = left_bottom_corner.z();
+	p.mat[1][1] = left_bottom_corner.z();
+	p.mat[2][2] = left_bottom_corner.z() + right_top_corner.z();
+	p.mat[2][3] = -(left_bottom_corner.z()*right_top_corner.z());
 	p.mat[3][2] = 1;
 	p.mat[3][3] = 0;
 	*this = othor * p;
@@ -255,31 +255,21 @@ matrix44 matrix44::operator*(const matrix44 &m) {
 	return n;
 }
 
-vec3f matrix44::operator*(const vec3f &v) const {
-	vec3f nv;
-	nv._x = mat[0][0] * v._x + mat[0][1] * v._y + mat[0][2] * v._z + mat[0][3];
-	nv._y = mat[1][0] * v._x + mat[1][1] * v._y + mat[1][2] * v._z + mat[1][3];
-	nv._z = mat[2][0] * v._x + mat[2][1] * v._y + mat[2][2] * v._z + mat[2][3];
-	float w = mat[3][0] * v._x + mat[3][1] * v._y + mat[3][2] * v._z + mat[3][3];
-	nv = nv / w;
+vec4f matrix44::operator*(const vec4f &v) const {
+	vec4f nv;
+	nv.x(mat[0][0] * v.x() + mat[0][1] * v.y() + mat[0][2] * v.z() + mat[0][3] * v.w());
+	nv.y(mat[1][0] * v.x() + mat[1][1] * v.y() + mat[1][2] * v.z() + mat[1][3] * v.w());
+	nv.z(mat[2][0] * v.x() + mat[2][1] * v.y() + mat[2][2] * v.z() + mat[2][3] * v.w());
+	nv.w(mat[3][0] * v.x() + mat[3][1] * v.y() + mat[3][2] * v.z() + mat[3][3] * v.w());
+	nv = nv / nv.w();
 	return nv;
 }
 
-vec3f matrix44::operator*(const vec3f *v) const {
-	vec3f nv;
-	nv._x = mat[0][0] * v->_x + mat[0][1] * v->_y + mat[0][2] * v->_z + mat[0][3];
-	nv._y = mat[1][0] * v->_x + mat[1][1] * v->_y + mat[1][2] * v->_z + mat[1][3];
-	nv._z = mat[2][0] * v->_x + mat[2][1] * v->_y + mat[2][2] * v->_z + mat[2][3];
-	float w = mat[3][0] * v->_x + mat[3][1] * v->_y + mat[3][2] * v->_z + mat[3][3];
-	nv = nv / w;
-	return nv;
-}
-
-matrix44& matrix44::operator=(const matrix44 &m) {
-	for (int i = 0; i < 4; i++) {
-		for (int j = 0; j < 4; j++) {
-			mat[i][j] = m.mat[i][j];
-		}
-	}
-	return *this;
-}
+//matrix44& matrix44::operator=(const matrix44 &m) {
+//	for (int i = 0; i < 4; i++) {
+//		for (int j = 0; j < 4; j++) {
+//			mat[i][j] = m.mat[i][j];
+//		}
+//	}
+//	return *this;
+//}

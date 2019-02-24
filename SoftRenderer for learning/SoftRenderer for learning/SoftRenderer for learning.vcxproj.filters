@@ -24,22 +24,25 @@
     <ClCompile Include="src\vertex.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="src\vec3f.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="src\color.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="src\draw.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="src\sample.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="src\texture.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="src\cube.cpp">
+    <ClCompile Include="src\vec.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Lighting.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Geometry.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ioimages.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
@@ -50,19 +53,10 @@
     <ClInclude Include="src\vertex.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="src\vec3f.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="src\color.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="src\draw.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="src\sample.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="src\spatial.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="src\texture.h">
@@ -71,7 +65,13 @@
     <ClInclude Include="src\ioimages.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="src\cube.h">
+    <ClInclude Include="src\Lighting.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\vec.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Geometry.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

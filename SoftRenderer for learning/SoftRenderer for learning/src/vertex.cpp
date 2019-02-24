@@ -1,35 +1,23 @@
 #include "vertex.h"
 
-vertex::vertex(const vec3f &pos, const color &col,const textcoord &tc,edge *e)
-	:_pos(pos), _col(col),_tc(tc),_e(e)
+vertex::vertex(const vec4f &pos,const textcoord &tc)
+	:_pos(pos), _posW(pos.x(), pos.y(), pos.z()),_tc(tc)
 {
-	_col._a = _pos._z;
+	
 }
 
-vertex::vertex(const vec3f &pos, const color &col)
-	: _pos(pos), _col(col),_tc(textcoord(0,0))
+vertex::vertex(const vec4f &pos, const vec3f& normal, const textcoord &tc)
+	: _pos(pos), _posW(pos.xyz()), _normal(normal), _tc(tc)
 {
-	_col._a = _pos._z;
+
 }
 
-vertex::vertex(const vertex &vertex)
-	: _pos(vertex._pos), _col(vertex._col),_tc(vertex._tc)
+vertex::vertex(const vec4f &pos)
+	: _pos(pos),_posW(pos.x(),pos.y(),pos.z()),_tc(textcoord(0,0))
 {
-	_col._a = _pos._z;
+	
 }
 
 vertex::~vertex()
 {
 }
-
-//edge::edge(vertex &v, face *f, edge *pair, edge *next) 
-//	:_v(&v),_f(f),_pair(pair),_next(next)
-//{
-//
-//}
-//
-//face::face(edge *e)
-//	: _e(e)
-//{
-//
-//}
